@@ -1,0 +1,4 @@
+<?php
+/**
+ * @todo Add tests.
+ */
