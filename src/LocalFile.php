@@ -1,5 +1,5 @@
 <?php
-namespace MichaelDrennen;
+namespace MichaelDrennen\LocalFile;
 use Exception;
 class LocalFile{
 
