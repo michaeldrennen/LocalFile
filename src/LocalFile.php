@@ -17,10 +17,7 @@ class LocalFile{
             throw new Exception("Unable to open the file at: " . $filePath);
         }
         while(!feof($handle)){
-            $line = fgets($handle);
-            if($line === false){
-                throw new Exception("Unable to get a line from the file at: " . $filePath);
-            }
+            fgets($handle);
             $lineCount++;
         }
 
