@@ -10,18 +10,6 @@ class LocalFile{
      * @throws Exception
      */
     public static function lineCount(string $filePath): int{
-        
-        $lineCount = 0;
-        $handle = fopen($filePath, "r");
-        if($handle === false){
-            throw new Exception("Unable to open the file at: " . $filePath);
-        }
-        while(!feof($handle)){
-            fgets($handle);
-            $lineCount++;
-        }
-
-        fclose($handle);   
-        return $lineCount;
+        return count(file($filePath));
     }
 }
