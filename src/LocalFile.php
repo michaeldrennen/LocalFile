@@ -1,27 +1,31 @@
 <?php
 namespace MichaelDrennen\LocalFile;
-use Exception;
-class LocalFile{
+
+use MichaelDrennen\LocalFile\Exceptions\UnableToOpenFile;
+
+class LocalFile {
 
     /**
      * A php function that returns the number of lines in a file on the local file system.
+     *
      * @param string $filePath
+     *
      * @return int
-     * @throws Exception
+     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToOpenFile
      */
-    public static function lineCount(string $filePath): int{
-        
+    public static function lineCount( string $filePath ): int {
+
         $lineCount = 0;
-        $handle = fopen($filePath, "r");
-        if($handle === false){
-            throw new Exception("Unable to open the file at: " . $filePath);
+        $handle    = @fopen( $filePath, "r" );
+        if ( $handle === false ) {
+            throw new UnableToOpenFile( "Unable to open the file at: " . $filePath );
         }
-        while(!feof($handle)){
-            fgets($handle);
+        while ( ! feof( $handle ) ) {
+            fgets( $handle );
             $lineCount++;
         }
 
-        fclose($handle);   
+        fclose( $handle );
         return $lineCount;
     }
 }
