@@ -4,7 +4,8 @@
   "type": "library",
   "require-dev": {
     "satooshi/php-coveralls": "^2.0",
-    "phpunit/phpunit": "^6.5"
+    "phpunit/phpunit": "^6.5",
+    "mikey179/vfsStream": "^1.6"
   },
   "license": "MIT",
   "authors": [
