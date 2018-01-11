@@ -1,4 +1,5 @@
 <?php
+namespace MichaelDrennen\LocalFile\Tests;
 
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;

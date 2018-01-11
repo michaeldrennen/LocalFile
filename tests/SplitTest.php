@@ -1,11 +1,10 @@
 <?php
+namespace MichaelDrennen\LocalFile\Tests;
 
-use PHPUnit\Framework\TestCase;
-use MichaelDrennen\LocalFile\LocalFile;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 
-class SplitTest extends TestCase {
+class SplitTest extends VfsStreamTest {
 
     /**
      * @var  vfsStreamDirectory $root

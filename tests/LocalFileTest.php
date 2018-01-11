@@ -1,5 +1,5 @@
 <?php
-
+namespace MichaelDrennen\LocalFile\Tests;
 use PHPUnit\Framework\TestCase;
 use MichaelDrennen\LocalFile\LocalFile;
 
