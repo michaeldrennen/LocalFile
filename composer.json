@@ -20,6 +20,11 @@
       "MichaelDrennen\\LocalFile\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "MichaelDrenen\\LocalFile\\Tests\\": "tests"
+    }
+  },
   "require": {
     "php": "^7.1"
   }

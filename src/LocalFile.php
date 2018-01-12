@@ -1,6 +1,8 @@
 <?php
 namespace MichaelDrennen\LocalFile;
 
+use MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory;
+use MichaelDrennen\LocalFile\Exceptions\SourceFileDoesNotExist;
 use MichaelDrennen\LocalFile\Exceptions\UnableToOpenFile;
 
 class LocalFile {
@@ -30,27 +32,36 @@ class LocalFile {
     }
 
 
+    /**
+     * @param string      $pathToSourceFile
+     * @param int         $linesPerFile
+     * @param string      $prefix
+     * @param string|null $destinationPath
+     *
+     * @throws \MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory
+     * @throws \MichaelDrennen\LocalFile\Exceptions\SourceFileDoesNotExist
+     */
     public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = 'split_', string $destinationPath = null ) {
         // expands all symbolic links and resolves references to '/./', '/../' and extra '/' characters
-        $pathToSourceFile = realpath( $pathToSourceFile );
+        //$pathToSourceFile = realpath( $pathToSourceFile );
 
         if ( false === file_exists( $pathToSourceFile ) ):
-            throw new \Exception( "Can't split [" . $pathToSourceFile . "] because it doesn't exist." );
+            throw new SourceFileDoesNotExist( "Can't split [" . $pathToSourceFile . "] because it doesn't exist." );
         endif;
 
         $sourceDirectory = dirname( $pathToSourceFile );
 
-        var_dump( $sourceDirectory );
+        //var_dump( $sourceDirectory );
 
         if ( is_null( $destinationPath ) ):
             $destinationPath = $sourceDirectory;
         endif;
 
         if ( false === is_writeable( $destinationPath ) ):
-            throw new \Exception( "Can't split [" . $pathToSourceFile . "] because the destination path at [" . $destinationPath . "] is not writeable." );
+            throw new CantWriteToReadOnlyDirectory( "Can't split [" . $pathToSourceFile . "] because the destination path at [" . $destinationPath . "] is not writeable." );
         endif;
 
-        var_dump( $destinationPath );
+        //var_dump( $destinationPath );
 
 
     }

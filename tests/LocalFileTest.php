@@ -1,5 +1,6 @@
 <?php
 namespace MichaelDrennen\LocalFile\Tests;
+
 use PHPUnit\Framework\TestCase;
 use MichaelDrennen\LocalFile\LocalFile;
 
@@ -20,7 +21,7 @@ class LocalFileTest extends TestCase {
     }
 
     public function testNumLinesOnMissingFileShouldThrowException() {
-        $this->expectException( Exception::class );
+        $this->expectException( \Exception::class );
         $pathToFile = 'thisFileDoesNotExist.txt';
         LocalFile::lineCount( $pathToFile );
     }
