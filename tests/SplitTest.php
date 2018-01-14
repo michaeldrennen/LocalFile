@@ -7,6 +7,7 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use MichaelDrennen\LocalFile\LocalFile;
+use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 
 class SplitTest extends TestCase {
 
@@ -45,12 +46,17 @@ class SplitTest extends TestCase {
      */
     public static function setUpBeforeClass() {
         self::$vfsRootDirObject   = vfsStream::setup( self::VFS_ROOT_DIR );
-        self::$writeableDirectory = vfsStream::url( self::VFS_ROOT_DIR ) . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME;
+        self::$writeableDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME );
         mkdir( self::$writeableDirectory, 0777 );
-        self::$anotherWriteableDirectory = vfsStream::url( self::VFS_ROOT_DIR ) . DIRECTORY_SEPARATOR . self::ANOTHER_WRITEABLE_DIR_NAME;
+        self::$anotherWriteableDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::ANOTHER_WRITEABLE_DIR_NAME );
         mkdir( self::$anotherWriteableDirectory, 0777 );
-        self::$readOnlyDirectory = vfsStream::url( self::VFS_ROOT_DIR ) . DIRECTORY_SEPARATOR . self::READ_ONLY_DIR_NAME;
+        self::$readOnlyDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::READ_ONLY_DIR_NAME );
         mkdir( self::$readOnlyDirectory, 0444 );
+
+        //var_dump( self::$writeableDirectory );
+        //echo "\n>>>>>>>\n";
+        //var_dump( vfsStream::inspect( new vfsStreamStructureVisitor() )->getStructure() );
+        //echo "\n>>>>>>>\n";
     }
 
 
@@ -65,17 +71,23 @@ class SplitTest extends TestCase {
     }
 
 
+
     public function testSplitShouldMakeFiveFilesInSameDirectory() {
-        $copied = copy( self::PATH_TO_SOURCE_FILE, self::$writeableDirectory . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
+        //$copied = copy( self::PATH_TO_SOURCE_FILE, vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME ) );
 
-        var_dump( $copied );
-        var_dump( file( $copied ) );
+        //vfsStream::newFile( self::SOURCE_FILE_NAME )
+        //         ->at( self::$vfsRootDirObject )
+        //         ->setContent( file_get_contents( self::PATH_TO_SOURCE_FILE ) );
 
-        $absolutePathToSourceFile = self::$writeableDirectory . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME;
-        var_dump( $absolutePathToSourceFile );
-        LocalFile::split( self::$writeableDirectory . self::SOURCE_FILE_NAME, 1 );
+        $virtualSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
+        file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
+
+
+        //$absolutePathToSourceFile = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
+        LocalFile::split( $virtualSourceFilePath, 1 );
+
 
         $files = scandir( self::$writeableDirectory );
-        $this->assertCount( 7, $files ); // includes . and ..
+        $this->assertCount( 8, $files ); // includes . and ..
     }
 }
