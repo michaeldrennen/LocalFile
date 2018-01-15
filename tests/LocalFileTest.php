@@ -6,12 +6,6 @@ use MichaelDrennen\LocalFile\LocalFile;
 
 class LocalFileTest extends TestCase {
 
-    private $pathToUnwriteableDirectory = './tests/testFiles/notWriteableDirectory';
-
-    public function setUp() {
-        // Make unwriteable directory read only.
-        chmod( $this->pathToUnwriteableDirectory, 0444 );
-    }
 
     public function testNumLines() {
         $pathToFile       = 'beeMovieScript.txt';
