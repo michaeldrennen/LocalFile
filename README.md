@@ -19,3 +19,12 @@ use MichaelDrennen\LocalFile\LocalFile;
 $lineCount = LocalFile::lineCount('/path/to/your/file.txt);
 echo $lineCount;
 ```
+
+
+#### Split a text file into chunks. Each chunk has 1000 lines.
+```php
+use MichaelDrennen\LocalFile\LocalFile;
+
+$splitFilePaths = LocalFile::split('/path/to/your/file.txt);
+print_r($splitFilePaths);
+```

@@ -41,47 +41,52 @@ class LocalFile {
      * @param string      $prefix
      * @param string|null $destinationPath
      *
-     * @returns boolean
+     * @returns array An array of the paths to the split files.
      * @throws \MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory
      * @throws \MichaelDrennen\LocalFile\Exceptions\SourceFileDoesNotExist
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToReadFile
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToOpenSplitFileHandle
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
      */
-    public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = 'split_', string $destinationPath = null ): bool {
+    public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = null, string $destinationPath = null ): array {
 
         if ( false === file_exists( $pathToSourceFile ) ):
             throw new SourceFileDoesNotExist( "Can't split [" . $pathToSourceFile . "] because it doesn't exist." );
         endif;
-
 
         $sourceFileParts     = pathinfo( $pathToSourceFile );
         $sourceDirectory     = $sourceFileParts[ 'dirname' ];
         $sourceFileName      = $sourceFileParts[ 'filename' ];
         $sourceFileExtension = $sourceFileParts[ 'extension' ];
 
-        //var_dump( $sourceDirectory );
+        /**
+         * Suppress the error here, because on failure I will throw a custom exception.
+         */
+        $sourceHandle = @fopen( $pathToSourceFile, "r" );
+
+        if ( false === $sourceHandle ):
+            throw new UnableToReadFile( "Unable to read the source file at [" . $pathToSourceFile . "]" );
+        endif;
 
         if ( is_null( $destinationPath ) ):
             $destinationPath = $sourceDirectory;
+        endif;
+
+        /**
+         * Make sure there is a trailing DIRECTORY_SEPARATOR
+         */
+        if ( DIRECTORY_SEPARATOR != substr( $destinationPath, -1 ) ):
+            $destinationPath .= DIRECTORY_SEPARATOR;
         endif;
 
         if ( false === is_writeable( $destinationPath ) ):
             throw new CantWriteToReadOnlyDirectory( "Can't split [" . $pathToSourceFile . "] because the destination path at [" . $destinationPath . "] is not writeable." );
         endif;
 
-        //var_dump( $destinationPath );
-
-        $sourceHandle = fopen( $pathToSourceFile, "r" );
-
-        if ( false === $sourceHandle ):
-            throw new UnableToReadFile( "Unable to read the source file at [" . $pathToSourceFile . "]" );
-        endif;
-
-
         $totalLineCount        = 0;
         $currentChunkLineCount = 0;
         $totalChunkCount       = 0;
+        $splitFilePaths        = [];
 
         while ( ( $line = fgets( $sourceHandle ) ) !== false ):
             // process the line read.
@@ -90,7 +95,9 @@ class LocalFile {
                 $totalChunkCount++;
                 $suffix             = $totalChunkCount;
                 $newSplitFileName   = $prefix . $sourceFileName . '_' . $suffix . '.' . $sourceFileExtension;
-                $newSplitFileHandle = fopen( $destinationPath . DIRECTORY_SEPARATOR . $newSplitFileName, 'w' );
+                $newSplitFilePath   = $destinationPath . DIRECTORY_SEPARATOR . $newSplitFileName;
+                $newSplitFileHandle = fopen( $newSplitFilePath, 'w' );
+                $splitFilePaths[]   = $newSplitFilePath;
             endif;
 
             if ( isset( $newSplitFileHandle ) && false !== $newSplitFileHandle ):
@@ -119,6 +126,6 @@ class LocalFile {
 
         @fclose( $sourceHandle );
 
-        return true;
+        return $splitFilePaths;
     }
 }
