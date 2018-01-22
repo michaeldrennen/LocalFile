@@ -115,6 +115,7 @@ class SplitTest extends TestCase {
         file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
         LocalFile::split( $virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory );
         $files = scandir( self::$anotherWriteableDirectory );
+        
         $this->assertCount( 7, $files ); // includes . and ..
     }
 }
