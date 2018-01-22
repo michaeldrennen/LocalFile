@@ -95,7 +95,7 @@ class LocalFile {
                 $totalChunkCount++;
                 $suffix             = $totalChunkCount;
                 $newSplitFileName   = $prefix . $sourceFileName . '_' . $suffix . '.' . $sourceFileExtension;
-                $newSplitFilePath   = $destinationPath . DIRECTORY_SEPARATOR . $newSplitFileName;
+                $newSplitFilePath   = $destinationPath . $newSplitFileName;
                 $newSplitFileHandle = fopen( $newSplitFilePath, 'w' );
                 $splitFilePaths[]   = $newSplitFilePath;
             endif;
