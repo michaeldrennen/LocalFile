@@ -91,11 +91,13 @@ class SplitTest extends TestCase {
      * @group quota
      */
     public function testSplitIntoFullDiskShouldThrowException() {
-        // Gives me enough room to write the source file.
-        vfsStream::setQuota( 18 );
         $this->expectException( UnableToWriteLineToSplitFile::class );
+        // Gives me enough room to write the source file.
+        $bytesInSourceFile = filesize( self::PATH_TO_SOURCE_FILE );
+
         $virtualSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
-        file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
+        @file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
+        vfsStream::setQuota( $bytesInSourceFile - 1 );
         LocalFile::split( $virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory );
         // Stop here and mark this test as incomplete.
         $this->markTestIncomplete(
@@ -115,7 +117,7 @@ class SplitTest extends TestCase {
         file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
         LocalFile::split( $virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory );
         $files = scandir( self::$anotherWriteableDirectory );
-        
+
         $this->assertCount( 7, $files ); // includes . and ..
     }
 }

@@ -88,8 +88,9 @@ class LocalFile {
         $totalChunkCount       = 0;
         $splitFilePaths        = [];
 
-        $firstLineWritten = false;
-        while ( ( $line = fgets( $sourceHandle ) ) !== false ):
+        while ( false !== ( $line = fgets( $sourceHandle ) ) ):
+
+            $line = trim( $line );
             // process the line read.
             if ( 0 === $currentChunkLineCount ):
                 // Create new split file.
@@ -102,12 +103,7 @@ class LocalFile {
             endif;
 
             if ( isset( $newSplitFileHandle ) && false !== $newSplitFileHandle ):
-                if ( $firstLineWritten ):
-                    $bytesWritten = fwrite( $newSplitFileHandle, PHP_EOL . trim( $line ) );
-                else:
-                    $bytesWritten = fwrite( $newSplitFileHandle, trim( $line ) );
-                endif;
-
+                $bytesWritten = fwrite( $newSplitFileHandle, $line . PHP_EOL );
 
                 if ( false === $bytesWritten ):
                     throw new UnableToWriteLineToSplitFile( "Unable to write line #" . ( $totalLineCount + 1 ) . " from " . $pathToSourceFile . " to split file named " . $newSplitFileName );
@@ -117,6 +113,7 @@ class LocalFile {
                 $currentChunkLineCount++;
 
                 if ( $currentChunkLineCount >= $linesPerFile ):
+                    @ftruncate( $newSplitFileHandle, -1 );
                     @fclose( $newSplitFileHandle );
                     $currentChunkLineCount = 0;
                 endif;
@@ -125,7 +122,9 @@ class LocalFile {
             endif;
         endwhile;
 
+
         if ( isset( $newSplitFileHandle ) ):
+            @ftruncate( $newSplitFileHandle, -1 );
             @fclose( $newSplitFileHandle ); // Just in case.
         endif;
 
