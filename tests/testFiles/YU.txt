@@ -1,0 +1,18 @@
+10380154	7500737	link	http://en.wikipedia.org/wiki/Yugoslavia				
+10380922	7500737	abbr	YUG				
+10380923	7500737	en	Yugoslavia		1		
+10401305	7500737	en	Federal Republic of Yugoslavia				
+10401306	7500737	sr	Jugoslavija				
+10401307	7500737	sr	Socijalistička Federativna Republika Jugoslavija				1
+10401308	7500737	sl	Socijalistična federativna republika Jugoslavija				1
+10401309	7500737	sr	Социјалистичка Федеративна Република Југославија				1
+10401310	7500737	sr	Savezna Republika Jugoslavija				
+10401311	7500737	en	Serbia and Montenegro				
+10401312	7500737	sr	Srbija i Crna Gora				
+10401313	7500737	sr	Југославија		1		1
+11105956	7500737	sr	Савезна Република Југославија	1			1
+11105957	7500737	link	http://de.wikipedia.org/wiki/Serbien_und_Montenegro				
+11262168	7500737	link	http://id.loc.gov/authorities/names/n79097346				
+11800860	7500737	nl	Joegoslavië				
+11906138	7500737	de	Jugoslawien	1	1		1
+12829252	7500737	fr	Yougoslavie	1	1		

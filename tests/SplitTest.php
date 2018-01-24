@@ -16,7 +16,8 @@ class SplitTest extends TestCase {
     const WRITEABLE_DIR_NAME         = 'writeableDir';
     const ANOTHER_WRITEABLE_DIR_NAME = 'anotherWriteableDir';
     const READ_ONLY_DIR_NAME         = 'readOnlyDirName';
-    const SOURCE_FILE_NAME           = 'phpUnitTestFile.txt';
+    //const SOURCE_FILE_NAME           = 'phpUnitTestFile.txt';
+    const SOURCE_FILE_NAME           = 'YU.txt';
     const PATH_TO_SOURCE_FILE        = './tests/testFiles/' . self::SOURCE_FILE_NAME;
     const PATH_TO_NON_EXISTENT_FILE  = './tests/testFiles/thisFileDoesNotExist.txt';
 
@@ -112,12 +113,29 @@ class SplitTest extends TestCase {
         $this->assertCount( 9, $files ); // includes . and ..
     }
 
+    /**
+     * @throws \MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory
+     * @throws \MichaelDrennen\LocalFile\Exceptions\SourceFileDoesNotExist
+     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToOpenSplitFileHandle
+     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToReadFile
+     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
+     * @group mike
+     */
     public function testSplitShouldMakeFiveFilesInAnotherDirectory() {
-        $virtualSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
+        $linesPerFile           = 20000;
+        $expectedFinalFileCount = 5;
+        $virtualSourceFilePath  = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
         file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
-        LocalFile::split( $virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory );
+        LocalFile::split( $virtualSourceFilePath, $linesPerFile, null, self::$anotherWriteableDirectory );
         $files = scandir( self::$anotherWriteableDirectory );
+        array_shift( $files );
+        array_shift( $files );
 
-        $this->assertCount( 7, $files ); // includes . and ..
+        print_r( $files );
+        foreach ( $files as $file ) {
+            print_r( file( self::$anotherWriteableDirectory . DIRECTORY_SEPARATOR . $file ) );
+            print_r( file_get_contents( self::$anotherWriteableDirectory . DIRECTORY_SEPARATOR . $file ) );
+        }
+        $this->assertCount( $expectedFinalFileCount, $files ); // includes . and ..
     }
 }

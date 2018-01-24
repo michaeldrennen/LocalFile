@@ -90,6 +90,7 @@ class LocalFile {
 
         while ( false !== ( $line = fgets( $sourceHandle ) ) ):
 
+            echo "\n This is our line: [$line]";
             $line = trim( $line );
             // process the line read.
             if ( 0 === $currentChunkLineCount ):
@@ -104,7 +105,7 @@ class LocalFile {
 
             if ( isset( $newSplitFileHandle ) && false !== $newSplitFileHandle ):
                 $bytesWritten = fwrite( $newSplitFileHandle, $line . PHP_EOL );
-
+                echo "\nJust wrote $bytesWritten bytes into $newSplitFilePath.";
                 if ( false === $bytesWritten ):
                     throw new UnableToWriteLineToSplitFile( "Unable to write line #" . ( $totalLineCount + 1 ) . " from " . $pathToSourceFile . " to split file named " . $newSplitFileName );
                 endif;
