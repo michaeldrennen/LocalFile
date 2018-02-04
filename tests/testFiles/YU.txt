@@ -15,4 +15,4 @@
 11262168	7500737	link	http://id.loc.gov/authorities/names/n79097346				
 11800860	7500737	nl	Joegoslavië				
 11906138	7500737	de	Jugoslawien	1	1		1
-12829252	7500737	fr	Yougoslavie	1	1		
+12829252	7500737	fr	Yougoslavie	1	1

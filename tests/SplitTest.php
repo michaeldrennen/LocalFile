@@ -1,4 +1,5 @@
 <?php
+
 namespace MichaelDrennen\LocalFile\Tests;
 
 use MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory;
@@ -10,16 +11,17 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use MichaelDrennen\LocalFile\LocalFile;
 
-class SplitTest extends TestCase {
+class SplitTest extends TestCase
+{
 
-    const VFS_ROOT_DIR               = 'vfsRootDir';
-    const WRITEABLE_DIR_NAME         = 'writeableDir';
+    const VFS_ROOT_DIR = 'vfsRootDir';
+    const WRITEABLE_DIR_NAME = 'writeableDir';
     const ANOTHER_WRITEABLE_DIR_NAME = 'anotherWriteableDir';
-    const READ_ONLY_DIR_NAME         = 'readOnlyDirName';
+    const READ_ONLY_DIR_NAME = 'readOnlyDirName';
     //const SOURCE_FILE_NAME           = 'phpUnitTestFile.txt';
-    const SOURCE_FILE_NAME           = 'YU.txt';
-    const PATH_TO_SOURCE_FILE        = './tests/testFiles/' . self::SOURCE_FILE_NAME;
-    const PATH_TO_NON_EXISTENT_FILE  = './tests/testFiles/thisFileDoesNotExist.txt';
+    const SOURCE_FILE_NAME = 'YU.txt';
+    const PATH_TO_SOURCE_FILE = './tests/testFiles/' . self::SOURCE_FILE_NAME;
+    const PATH_TO_NON_EXISTENT_FILE = './tests/testFiles/thisFileDoesNotExist.txt';
 
     /**
      * @var  vfsStreamDirectory $vfsRootDirObject The root VFS object created in the setUp() method.
@@ -55,51 +57,56 @@ class SplitTest extends TestCase {
     /**
      * Set up test environment
      */
-    public function setUp() {
-        self::$vfsRootDirObject   = vfsStream::setup( self::VFS_ROOT_DIR );
-        self::$writeableDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME );
-        mkdir( self::$writeableDirectory, 0777 );
-        self::$anotherWriteableDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::ANOTHER_WRITEABLE_DIR_NAME );
-        mkdir( self::$anotherWriteableDirectory, 0777 );
-        self::$readOnlyDirectory = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::READ_ONLY_DIR_NAME );
-        mkdir( self::$readOnlyDirectory, 0444 );
+    public function setUp()
+    {
+        self::$vfsRootDirObject = vfsStream::setup(self::VFS_ROOT_DIR);
+        self::$writeableDirectory = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME);
+        mkdir(self::$writeableDirectory, 0777);
+        self::$anotherWriteableDirectory = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::ANOTHER_WRITEABLE_DIR_NAME);
+        mkdir(self::$anotherWriteableDirectory, 0777);
+        self::$readOnlyDirectory = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::READ_ONLY_DIR_NAME);
+        mkdir(self::$readOnlyDirectory, 0444);
 
-        self::$readableSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
-        file_put_contents( self::$readableSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
+        self::$readableSourceFilePath = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME);
+        file_put_contents(self::$readableSourceFilePath, file_get_contents(self::PATH_TO_SOURCE_FILE));
 
-        self::$unreadableSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . "unreadable_" . self::SOURCE_FILE_NAME );
-        file_put_contents( self::$unreadableSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
-        chmod( self::$unreadableSourceFilePath, '0100' );
+        self::$unreadableSourceFilePath = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . "unreadable_" . self::SOURCE_FILE_NAME);
+        file_put_contents(self::$unreadableSourceFilePath, file_get_contents(self::PATH_TO_SOURCE_FILE));
+        chmod(self::$unreadableSourceFilePath, '0100');
     }
 
 
-    public function testSplitWithNonExistentFileShouldThrowException() {
-        $this->expectException( SourceFileDoesNotExist::class );
-        LocalFile::split( self::PATH_TO_NON_EXISTENT_FILE );
+    public function testSplitWithNonExistentFileShouldThrowException()
+    {
+        $this->expectException(SourceFileDoesNotExist::class);
+        LocalFile::split(self::PATH_TO_NON_EXISTENT_FILE);
     }
 
-    public function testSplitWithUnreadableFileShouldThrowException() {
-        $this->expectException( UnableToReadFile::class );
-        LocalFile::split( self::$unreadableSourceFilePath );
+    public function testSplitWithUnreadableFileShouldThrowException()
+    {
+        $this->expectException(UnableToReadFile::class);
+        LocalFile::split(self::$unreadableSourceFilePath);
     }
 
-    public function testSplitIntoReadOnlyDirectoryShouldThrowException() {
-        $this->expectException( CantWriteToReadOnlyDirectory::class );
-        LocalFile::split( self::PATH_TO_SOURCE_FILE, 1, 'split_', self::$readOnlyDirectory );
+    public function testSplitIntoReadOnlyDirectoryShouldThrowException()
+    {
+        $this->expectException(CantWriteToReadOnlyDirectory::class);
+        LocalFile::split(self::PATH_TO_SOURCE_FILE, 1, 'split_', self::$readOnlyDirectory);
     }
 
     /**
      * @group quota
      */
-    public function testSplitIntoFullDiskShouldThrowException() {
-        $this->expectException( UnableToWriteLineToSplitFile::class );
+    public function testSplitIntoFullDiskShouldThrowException()
+    {
+        $this->expectException(UnableToWriteLineToSplitFile::class);
         // Gives me enough room to write the source file.
-        $bytesInSourceFile = filesize( self::PATH_TO_SOURCE_FILE );
+        $bytesInSourceFile = filesize(self::PATH_TO_SOURCE_FILE);
 
-        $virtualSourceFilePath = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
-        @file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
-        vfsStream::setQuota( $bytesInSourceFile - 1 );
-        LocalFile::split( $virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory );
+        $virtualSourceFilePath = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME);
+        @file_put_contents($virtualSourceFilePath, file_get_contents(self::PATH_TO_SOURCE_FILE));
+        vfsStream::setQuota($bytesInSourceFile - 1);
+        LocalFile::split($virtualSourceFilePath, 1, null, self::$anotherWriteableDirectory);
         // Stop here and mark this test as incomplete.
         $this->markTestIncomplete(
             "Incomplete test. Need to look into why this isn't throwing an exception when I set the quota to 18 bytes."
@@ -107,10 +114,11 @@ class SplitTest extends TestCase {
     }
 
 
-    public function testSplitShouldMakeFiveFilesInSameDirectory() {
-        LocalFile::split( self::$readableSourceFilePath, 1 );
-        $files = scandir( self::$writeableDirectory );
-        $this->assertCount( 9, $files ); // includes . and ..
+    public function testSplitShouldMakeFiveFilesInSameDirectory()
+    {
+        LocalFile::split(self::$readableSourceFilePath, 4);
+        $files = scandir(self::$writeableDirectory);
+        $this->assertCount(9, $files); // includes . and ..
     }
 
     /**
@@ -121,21 +129,21 @@ class SplitTest extends TestCase {
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
      * @group mike
      */
-    public function testSplitShouldMakeFiveFilesInAnotherDirectory() {
-        $linesPerFile           = 20000;
+    public function testSplitShouldMakeFiveFilesInAnotherDirectory()
+    {
         $expectedFinalFileCount = 5;
-        $virtualSourceFilePath  = vfsStream::url( self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR . self::SOURCE_FILE_NAME );
-        file_put_contents( $virtualSourceFilePath, file_get_contents( self::PATH_TO_SOURCE_FILE ) );
-        LocalFile::split( $virtualSourceFilePath, $linesPerFile, null, self::$anotherWriteableDirectory );
-        $files = scandir( self::$anotherWriteableDirectory );
-        array_shift( $files );
-        array_shift( $files );
+        $linesPerFile = 4;
+        $virtualSourceFilePath = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR .
+            self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR .
+            self::SOURCE_FILE_NAME);
+        file_put_contents($virtualSourceFilePath, file_get_contents(self::PATH_TO_SOURCE_FILE));
 
-        print_r( $files );
-        foreach ( $files as $file ) {
-            print_r( file( self::$anotherWriteableDirectory . DIRECTORY_SEPARATOR . $file ) );
-            print_r( file_get_contents( self::$anotherWriteableDirectory . DIRECTORY_SEPARATOR . $file ) );
-        }
-        $this->assertCount( $expectedFinalFileCount, $files ); // includes . and ..
+        LocalFile::split($virtualSourceFilePath, $linesPerFile, null, self::$anotherWriteableDirectory);
+
+        $files = scandir(self::$anotherWriteableDirectory);
+        array_shift($files); // Remove .
+        array_shift($files); // Remove ..
+
+        $this->assertCount($expectedFinalFileCount, $files); // includes . and ..
     }
 }

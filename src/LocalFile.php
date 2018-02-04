@@ -125,6 +125,7 @@ class LocalFile {
         endwhile;
 
 
+        // Remove the trailing newline.
         if ( isset( $newSplitFileHandle ) ):
             @ftruncate( $newSplitFileHandle, -1 );
             @fclose( $newSplitFileHandle ); // Just in case.
