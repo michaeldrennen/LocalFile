@@ -2,10 +2,14 @@
   "name": "michaeldrennen/local-file",
   "description": "A small php library that adds some functions to operate on local files, like an efficient line count function.",
   "type": "library",
+  "require": {
+    "php": "^7.3"
+  },
   "require-dev": {
-    "satooshi/php-coveralls": "^2.0",
-    "phpunit/phpunit": "^6.5",
-    "mikey179/vfsStream": "^1.6"
+    "mikey179/vfsstream": "dev-master",
+    "phpunit/phpunit": "^8.0",
+    "php-coveralls/php-coveralls": "^2.1"
+
   },
   "license": "MIT",
   "authors": [
@@ -24,8 +28,5 @@
     "psr-4": {
       "MichaelDrenen\\LocalFile\\Tests\\": "tests"
     }
-  },
-  "require": {
-    "php": "^7.1"
   }
 }

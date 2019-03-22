@@ -11,8 +11,7 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use MichaelDrennen\LocalFile\LocalFile;
 
-class SplitTest extends TestCase
-{
+class SplitTest extends TestCase {
 
     const VFS_ROOT_DIR = 'vfsRootDir';
     const WRITEABLE_DIR_NAME = 'writeableDir';
@@ -57,9 +56,8 @@ class SplitTest extends TestCase
     /**
      * Set up test environment
      */
-    public function setUp()
-    {
-        self::$vfsRootDirObject = vfsStream::setup(self::VFS_ROOT_DIR);
+    public function setUp(): void {
+        self::$vfsRootDirObject   = vfsStream::setup(self::VFS_ROOT_DIR);
         self::$writeableDirectory = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::WRITEABLE_DIR_NAME);
         mkdir(self::$writeableDirectory, 0777);
         self::$anotherWriteableDirectory = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR . self::ANOTHER_WRITEABLE_DIR_NAME);
@@ -76,20 +74,17 @@ class SplitTest extends TestCase
     }
 
 
-    public function testSplitWithNonExistentFileShouldThrowException()
-    {
+    public function testSplitWithNonExistentFileShouldThrowException() {
         $this->expectException(SourceFileDoesNotExist::class);
         LocalFile::split(self::PATH_TO_NON_EXISTENT_FILE);
     }
 
-    public function testSplitWithUnreadableFileShouldThrowException()
-    {
+    public function testSplitWithUnreadableFileShouldThrowException() {
         $this->expectException(UnableToReadFile::class);
         LocalFile::split(self::$unreadableSourceFilePath);
     }
 
-    public function testSplitIntoReadOnlyDirectoryShouldThrowException()
-    {
+    public function testSplitIntoReadOnlyDirectoryShouldThrowException() {
         $this->expectException(CantWriteToReadOnlyDirectory::class);
         LocalFile::split(self::PATH_TO_SOURCE_FILE, 1, 'split_', self::$readOnlyDirectory);
     }
@@ -97,8 +92,7 @@ class SplitTest extends TestCase
     /**
      * @group quota
      */
-    public function testSplitIntoFullDiskShouldThrowException()
-    {
+    public function testSplitIntoFullDiskShouldThrowException() {
         $this->expectException(UnableToWriteLineToSplitFile::class);
         // Gives me enough room to write the source file.
         $bytesInSourceFile = filesize(self::PATH_TO_SOURCE_FILE);
@@ -114,8 +108,7 @@ class SplitTest extends TestCase
     }
 
 
-    public function testSplitShouldMakeFiveFilesInSameDirectory()
-    {
+    public function testSplitShouldMakeFiveFilesInSameDirectory() {
         LocalFile::split(self::$readableSourceFilePath, 4);
         $files = scandir(self::$writeableDirectory);
         $this->assertCount(9, $files); // includes . and ..
@@ -129,13 +122,12 @@ class SplitTest extends TestCase
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
      * @group mike
      */
-    public function testSplitShouldMakeFiveFilesInAnotherDirectory()
-    {
+    public function testSplitShouldMakeFiveFilesInAnotherDirectory() {
         $expectedFinalFileCount = 5;
-        $linesPerFile = 4;
-        $virtualSourceFilePath = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR .
-            self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR .
-            self::SOURCE_FILE_NAME);
+        $linesPerFile           = 4;
+        $virtualSourceFilePath  = vfsStream::url(self::VFS_ROOT_DIR . DIRECTORY_SEPARATOR .
+                                                 self::WRITEABLE_DIR_NAME . DIRECTORY_SEPARATOR .
+                                                 self::SOURCE_FILE_NAME);
         file_put_contents($virtualSourceFilePath, file_get_contents(self::PATH_TO_SOURCE_FILE));
 
         LocalFile::split($virtualSourceFilePath, $linesPerFile, null, self::$anotherWriteableDirectory);
