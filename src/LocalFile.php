@@ -40,6 +40,7 @@ class LocalFile {
      * @param int         $linesPerFile
      * @param string      $prefix
      * @param string|null $destinationPath
+     * @param string      $directorySeparator
      *
      * @returns array An array of the paths to the split files.
      * @throws \MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory
@@ -48,7 +49,7 @@ class LocalFile {
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToOpenSplitFileHandle
      * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
      */
-    public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = null, string $destinationPath = null ): array {
+    public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = null, string $destinationPath = null, string $directorySeparator = DIRECTORY_SEPARATOR ): array {
 
         if ( false === file_exists( $pathToSourceFile ) ):
             throw new SourceFileDoesNotExist( "Can't split [" . $pathToSourceFile . "] because it doesn't exist." );
@@ -73,10 +74,10 @@ class LocalFile {
         endif;
 
         /**
-         * Make sure there is a trailing DIRECTORY_SEPARATOR
+         * Make sure there is a trailing $directorySeparator
          */
-        if ( DIRECTORY_SEPARATOR != substr( $destinationPath, -1 ) ):
-            $destinationPath .= DIRECTORY_SEPARATOR;
+        if ( $directorySeparator != substr( $destinationPath, -1 ) ):
+            $destinationPath .= $directorySeparator;
         endif;
 
         if ( false === is_writeable( $destinationPath ) ):
