@@ -35,20 +35,25 @@ class LocalFile {
     }
 
 
+
     /**
-     * @param string      $pathToSourceFile
-     * @param int         $linesPerFile
-     * @param string      $prefix
+     * @param string $pathToSourceFile
+     * @param int $linesPerFile
+     * @param string|null $prefix
      * @param string|null $destinationPath
-     *
-     * @returns array An array of the paths to the split files.
-     * @throws \MichaelDrennen\LocalFile\Exceptions\CantWriteToReadOnlyDirectory
-     * @throws \MichaelDrennen\LocalFile\Exceptions\SourceFileDoesNotExist
-     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToReadFile
-     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToOpenSplitFileHandle
-     * @throws \MichaelDrennen\LocalFile\Exceptions\UnableToWriteLineToSplitFile
+     * @param string $DIRECTORY_SEPARATOR
+     * @return array An array of the paths to the split files.
+     * @throws CantWriteToReadOnlyDirectory
+     * @throws SourceFileDoesNotExist
+     * @throws UnableToOpenSplitFileHandle
+     * @throws UnableToReadFile
+     * @throws UnableToWriteLineToSplitFile
      */
-    public static function split( string $pathToSourceFile, $linesPerFile = 1000, string $prefix = null, string $destinationPath = null ): array {
+    public static function split( string $pathToSourceFile,
+                                  $linesPerFile = 1000,
+                                  string $prefix = null,
+                                  string $destinationPath = null,
+                                  string $DIRECTORY_SEPARATOR = DIRECTORY_SEPARATOR): array {
 
         if ( false === file_exists( $pathToSourceFile ) ):
             throw new SourceFileDoesNotExist( "Can't split [" . $pathToSourceFile . "] because it doesn't exist." );
@@ -75,8 +80,8 @@ class LocalFile {
         /**
          * Make sure there is a trailing DIRECTORY_SEPARATOR
          */
-        if ( DIRECTORY_SEPARATOR != substr( $destinationPath, -1 ) ):
-            $destinationPath .= DIRECTORY_SEPARATOR;
+        if ( $DIRECTORY_SEPARATOR != substr( $destinationPath, -1 ) ):
+            $destinationPath .= $DIRECTORY_SEPARATOR;
         endif;
 
         if ( false === is_writeable( $destinationPath ) ):
@@ -89,7 +94,6 @@ class LocalFile {
         $splitFilePaths        = [];
 
         while ( false !== ( $line = fgets( $sourceHandle ) ) ):
-
 
             $line = trim( $line );
 

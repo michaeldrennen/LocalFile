@@ -6,10 +6,9 @@
     "php": "^7.3"
   },
   "require-dev": {
-    "mikey179/vfsstream": "dev-master",
-    "phpunit/phpunit": "^8.0",
-    "php-coveralls/php-coveralls": "^2.1"
-
+    "mikey179/vfsstream": "^1.6",
+    "phpunit/phpunit": "^9.5",
+    "php-coveralls/php-coveralls": "^2.4"
   },
   "license": "MIT",
   "authors": [
@@ -18,7 +17,7 @@
       "email": "michaeldrennen74@gmail.com"
     }
   ],
-  "minimum-stability": "alpha",
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "MichaelDrennen\\LocalFile\\": "src"
