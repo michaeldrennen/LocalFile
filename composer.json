@@ -3,7 +3,7 @@
   "description": "A small php library that adds some functions to operate on local files, like an efficient line count function.",
   "type": "library",
   "require": {
-    "php": "^7.3"
+    "php": "^7.3||^8.0"
   },
   "require-dev": {
     "mikey179/vfsstream": "^1.6",
