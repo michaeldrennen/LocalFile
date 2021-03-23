@@ -119,7 +119,7 @@ class LocalFile {
                 $currentChunkLineCount++;
 
                 if ( $currentChunkLineCount >= $linesPerFile ):
-                    @ftruncate( $newSplitFileHandle, -1 );
+                    //@ftruncate( $newSplitFileHandle, -1 );
                     @fclose( $newSplitFileHandle );
                     $currentChunkLineCount = 0;
                 endif;
@@ -131,7 +131,7 @@ class LocalFile {
 
         // Remove the trailing newline.
         if ( isset( $newSplitFileHandle ) ):
-            @ftruncate( $newSplitFileHandle, -1 );
+            //@ftruncate( $newSplitFileHandle, -1 );
             @fclose( $newSplitFileHandle ); // Just in case.
         endif;
 
